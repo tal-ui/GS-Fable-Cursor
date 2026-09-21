@@ -1,0 +1,1 @@
+ALTER TABLE "requisition_requirements" ALTER COLUMN "value" DROP NOT NULL;
