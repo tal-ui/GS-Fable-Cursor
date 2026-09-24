@@ -13,6 +13,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1).optional(),
   PGLITE_DATA_DIR: z.string().default(".data/pglite"),
   UPLOADS_DIR: z.string().default(".data/uploads"),
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
   SEED_ON_EMPTY: z.string().optional(),
 
   SESSION_SECRET: z.string().min(16).default("dev-only-session-secret-change-me-please"),
@@ -66,6 +67,8 @@ export const env = {
   whatsappEnabled: Boolean(raw.WHATSAPP_ACCESS_TOKEN && raw.WHATSAPP_PHONE_NUMBER_ID),
   emailEnabled: Boolean(raw.SMTP_URL),
   aiEnabled: Boolean(raw.AI_API_KEY),
+  /** Private Vercel Blob replaces the local UPLOADS_DIR when a store is connected (serverless disks are read-only). */
+  blobStorageEnabled: Boolean(raw.BLOB_READ_WRITE_TOKEN),
   jobsInlineRunner: boolFromString.parse(raw.JOBS_INLINE_RUNNER ?? "true"),
 };
 

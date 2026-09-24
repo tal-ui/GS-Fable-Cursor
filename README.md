@@ -85,6 +85,8 @@ The embedded PGlite database has no background checkpointer, so killing the dev 
 4. Point a scheduler at `POST /api/jobs/run` with `Authorization: Bearer $JOBS_SECRET`, or keep `JOBS_INLINE_RUNNER=true` for a single instance.
 5. Store uploads on a persistent volume (`UPLOADS_DIR`) or mount object storage there.
 
+On Vercel, connect a Postgres store (it sets `DATABASE_URL`) and a **private** Blob store (it sets `BLOB_READ_WRITE_TOKEN`, which switches document storage from `UPLOADS_DIR` to Blob, namespaced by `VERCEL_ENV`). `vercel.json` pins the Next.js preset and runs `/api/jobs/run` hourly; Vercel Cron calls it with `GET` and `Authorization: Bearer $CRON_SECRET`, so set `JOBS_SECRET` to the same value. The inline runner still processes jobs while users are active.
+
 ## Repository map
 
 ```

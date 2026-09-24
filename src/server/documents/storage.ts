@@ -1,6 +1,7 @@
 import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { del, get, put } from "@vercel/blob";
 import { env } from "@/lib/env";
 
 /**
@@ -36,4 +37,29 @@ export const localStorageAdapter: StorageAdapter = {
   },
 };
 
-export const storage: StorageAdapter = localStorageAdapter;
+/**
+ * Keys are namespaced by Vercel environment, so preview deployments and local dev (with pulled env)
+ * never read, overwrite or orphan production files in the shared store.
+ */
+const blobPath = (key: string) => `${process.env.VERCEL_ENV ?? "local"}/${key}`;
+
+/**
+ * Private Vercel Blob store (serverless file systems are read-only and per-instance). Reads skip the
+ * CDN cache and uploads set the shortest cache lifetime, so an erased identity document is not
+ * served from an edge copy.
+ */
+export const blobStorageAdapter: StorageAdapter = {
+  async put(key, data) {
+    await put(blobPath(key), data, { access: "private", cacheControlMaxAge: 60 });
+  },
+  async get(key) {
+    const result = await get(blobPath(key), { access: "private", useCache: false });
+    if (!result || result.statusCode !== 200) throw new Error("Stored file not found");
+    return Buffer.from(await new Response(result.stream).arrayBuffer());
+  },
+  async remove(key) {
+    await del(blobPath(key));
+  },
+};
+
+export const storage: StorageAdapter = env.blobStorageEnabled ? blobStorageAdapter : localStorageAdapter;

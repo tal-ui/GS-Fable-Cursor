@@ -22,7 +22,7 @@ export default async function AdminSettingsPage() {
           aiThreshold: env.AI_CONFIDENCE_THRESHOLD,
           integrationTimeoutMs: env.INTEGRATION_TIMEOUT_MS,
           database: env.DATABASE_URL ? "PostgreSQL" : "PGlite (embedded, local)",
-          uploadsDir: env.UPLOADS_DIR,
+          uploadsDir: env.blobStorageEnabled ? "Vercel Blob (private)" : env.UPLOADS_DIR,
           devLogin: env.devLoginEnabled,
           isProd: env.isProd,
         }}
