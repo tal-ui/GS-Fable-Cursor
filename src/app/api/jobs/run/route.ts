@@ -27,3 +27,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Job run failed" }, { status: 500 });
   }
 }
+
+/** Vercel Cron calls with GET and `Authorization: Bearer $CRON_SECRET`; set JOBS_SECRET to the same value. */
+export const GET = POST;

@@ -16,6 +16,7 @@ process.env.SEED_ON_EMPTY = "false";
 process.env.JOBS_INLINE_RUNNER = "false";
 process.env.DEV_LOGIN_ENABLED = "false";
 delete process.env.DATABASE_URL;
+delete process.env.BLOB_READ_WRITE_TOKEN;
 
 vi.mock("server-only", () => ({}));
 

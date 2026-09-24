@@ -1,0 +1,10 @@
+# Local-only files that `vercel deploy` must never upload
+.env*
+!.env.example
+.data/
+uploads/
+terminals/
+coverage/
+node_modules/
+.next/
+.claude/
